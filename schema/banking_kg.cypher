@@ -17,6 +17,10 @@
 //   PII         market: SBA sole proprietors keep no name or street. Bank: customer name kept for the demo;
 //               email, phone and street address are NOT loaded
 //
+// Migrations: none. This file is the whole schema and is applied by etl.loader to an EMPTY tenant only.
+// Every statement is CREATE CONSTRAINT ... IF NOT EXISTS, so applying it twice is a no-op. A schema change
+// is released by loading into a new tenant (or re-importing a snapshot), never by altering a loaded one.
+//
 // Engine 1.7.1 limits followed: one label per node; literal property maps only; the loader checks counts
 // itself because constraints may not enforce; load into an engine started with --data-path; create vector
 // indexes after loading and rebuild them (they do not backfill).

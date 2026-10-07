@@ -24,17 +24,26 @@ BANK = {"name": "Banking-KG Bank", "lender_type": "Bank", "hq_city": "Richmond",
 # conventional; lien position comes from loan_collateral.lien_position, else from the product.
 FIRST_LIEN = "Conventional:First Lien"
 SUBORDINATE = "Conventional:Subordinate Lien"
+FIRST_POSITION = 1
+MORTGAGE, HELOC = "MORTGAGE", "HELOC"  # bank loans.loan_type values that HMDA would report
 
 
 def loan_product(loan: dict, lien: int | None) -> str | None:
-    if loan.get("loan_type") == "MORTGAGE":
-        return SUBORDINATE if lien and lien > 1 else FIRST_LIEN
-    if loan.get("loan_type") == "HELOC":
-        return SUBORDINATE if lien is None or lien > 1 else FIRST_LIEN
+    """The HMDA LoanProduct a bank loan would be reported under, or None for loans HMDA does not cover.
+
+    A mortgage is first lien unless its collateral says otherwise; a HELOC is subordinate unless its
+    collateral says it holds first position."""
+    if loan.get("loan_type") == MORTGAGE:
+        return SUBORDINATE if lien and lien > FIRST_POSITION else FIRST_LIEN
+    if loan.get("loan_type") == HELOC:
+        return SUBORDINATE if lien is None or lien > FIRST_POSITION else FIRST_LIEN
     return None
 
 
 def build(market: Graph, bank: Graph) -> Graph:
+    """The bridge as its own small graph: the bank's Lender node, OFFERED_BY and CLASSIFIED_AS edges.
+
+    market supplies the LoanProduct nodes that exist; a classification is made only to one of them."""
     g = Graph()
     g.node("Lender", BANK_ID, **BANK)
     for pid in bank.nodes["Product"]:
@@ -44,6 +53,12 @@ def build(market: Graph, bank: Graph) -> Graph:
     for lid, loan in bank.nodes["CustomerLoan"].items():
         p = loan_product(loan, lien.get(lid))
         if p and p in have:
-            g.edge("CLASSIFIED_AS", "CustomerLoan", lid, "LoanProduct", p,
-                   basis="loan_type + lien_position; no FHA/VA field in the request, so conventional")
+            g.edge(
+                "CLASSIFIED_AS",
+                "CustomerLoan",
+                lid,
+                "LoanProduct",
+                p,
+                basis="loan_type + lien_position; no FHA/VA field in the request, so conventional",
+            )
     return g
