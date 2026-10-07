@@ -1,0 +1,41 @@
+[project]
+name = "banking-kg"
+version = "2.0.0"
+description = "banking-kg: a public lending market (HMDA, GLEIF, FDIC Call Reports, SBA) and one synthetic bank's customers, as one Samyama knowledge graph"
+requires-python = ">=3.12"
+license = {text = "Proprietary - see LICENSE"}
+authors = [{name = "Samyama.ai"}]
+keywords = ["knowledge-graph", "samyama", "banking", "hmda", "call-report", "sba", "lending", "graph-database"]
+dependencies = []          # etl, verify and benchmarks use the standard library only
+
+[project.optional-dependencies]
+mcp = ["fastmcp>=0.1.0"]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.1.0"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["etl*", "mcp_server*", "benchmarks*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 150
+target-version = "py312"
+
+[tool.ruff.lint]
+# pyflakes, pycodestyle, import order, bugbear, pyupgrade, simplify, bandit (security), ruff, perflint,
+# timezone-aware datetimes, implicit string concatenation, builtins shadowing, naming, docstring presence
+select = ["F", "E", "W", "I", "B", "UP", "SIM", "S", "RUF", "PERF", "DTZ", "ISC", "A", "N", "D1"]
+ignore = [
+    "N812",   # `from etl import identity as I` is the house alias
+    "E741",   # `I` as that alias
+    "D105", "D107",   # magic methods and __init__ document themselves through the class
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "D1"]   # pytest uses assert; test names are their documentation

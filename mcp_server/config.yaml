@@ -1,0 +1,9 @@
+# Client-side description of the server. The server itself reads the engine URL and tenant from the
+# environment (BANKING_KG_URL, BANKING_KG_GRAPH; defaults in etl/config.py), not from this file.
+server:
+  name: banking-kg
+  description: Read-only access to banking-kg — the public DC 2023 lending market and the synthetic Banking-KG Bank's customers and campaign audiences
+  command: python -m mcp_server.server
+  env:
+    - BANKING_KG_URL
+    - BANKING_KG_GRAPH
