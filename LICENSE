@@ -1,0 +1,11 @@
+Copyright (c) 2026 Samyama.ai. All rights reserved.
+
+PROPRIETARY AND CONFIDENTIAL. Not for distribution outside Samyama.ai and the parties it shares this
+work with under agreement.
+
+Data notice:
+  * Market layer — built from public U.S. government and GLEIF data: HMDA (CFPB/FFIEC), FDIC BankFind and
+    financials, SBA 7(a)/504 FOIA (public domain), GLEIF LEI data (CC0 1.0). Those sources keep their own
+    terms; this notice covers the code, the schema and the compiled graph.
+  * Bank layer — entirely synthetic. "Banking-KG Bank", its customers and its competitors are fictional.
+    Any resemblance to a real person or institution is coincidental.

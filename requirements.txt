@@ -1,0 +1,7 @@
+# Runtime dependencies for banking-kg: none.
+# etl, verify and benchmarks use the Python standard library only (Python >= 3.12) and talk to the
+# engine over HTTP through etl/helpers.py, so there is no SDK dependency.
+#
+# Optional:
+#   pip install -e '.[dev]'    pytest, ruff
+#   pip install -e '.[mcp]'    fastmcp, for mcp_server/

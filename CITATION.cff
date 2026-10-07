@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this knowledge graph, please cite it as below. DATASET_CARD.md has the details."
+title: "banking-kg: a public lending market and a synthetic bank's customers as one knowledge graph for Samyama"
+type: dataset
+version: "2.0.0"
+date-released: "2026-10-07"
+authors:
+  - name: "Samyama.ai"
+    website: "https://git.samyama.ai/Samyama.ai"
+repository-code: "https://git.samyama.ai/Samyama.ai/banking-kg"
+license-url: "https://git.samyama.ai/Samyama.ai/banking-kg/src/branch/main/LICENSE"
+keywords:
+  - knowledge-graph
+  - samyama
+  - property-graph
+  - banking
+  - hmda
+  - call-report
+  - sba
+  - synthetic-data
+references:
+  - type: data
+    title: "Home Mortgage Disclosure Act (HMDA) Loan/Application Register, 2023"
+    authors:
+      - name: "Consumer Financial Protection Bureau"
+    url: "https://ffiec.cfpb.gov/data-browser/"
+  - type: data
+    title: "FDIC BankFind Suite: institutions and financials"
+    authors:
+      - name: "Federal Deposit Insurance Corporation"
+    url: "https://banks.data.fdic.gov/"
+  - type: data
+    title: "SBA 7(a) and 504 FOIA loan data"
+    authors:
+      - name: "U.S. Small Business Administration"
+    url: "https://data.sba.gov/dataset/7a-504-foia"
+  - type: data
+    title: "GLEIF LEI records"
+    authors:
+      - name: "Global Legal Entity Identifier Foundation"
+    url: "https://www.gleif.org/"

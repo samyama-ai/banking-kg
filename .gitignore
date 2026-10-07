@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.env
+# data never enters the repo: raw downloads, the bank tables and snapshots live in ../data/banking-kg;
+# the snapshot is a release asset. data/SNAPSHOT.md is the only tracked file under data/.
+*.csv
+*.sgsnap
+*.sgsnap.part
+/data/*
+!/data/SNAPSHOT.md
+# demo recordings
+*.mp4
+*.webm
+*.cast
