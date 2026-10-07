@@ -10,6 +10,7 @@ dependencies = []          # etl, verify and benchmarks use the standard library
 
 [project.optional-dependencies]
 mcp = ["fastmcp>=0.1.0"]
+demo = ["rich>=13.0"]                # demo/demo.py, the terminal walkthrough
 dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.1.0"]
 
 [build-system]
