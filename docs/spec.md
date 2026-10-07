@@ -1,6 +1,11 @@
 # Lending Ledger Graph — Specification
 
 **Draft 1 · 23 September 2026 · handed over for build**
+**Draft 2 · 7 October 2026 · built: the market layer below, plus a synthetic bank layer (§10, D5)**
+
+> Read with [`schema.md`](schema.md) for what was built. This spec describes the **market layer** (real,
+> public) in full; the **bank layer** (synthetic customers of a fictional bank) and the bridge between the
+> two are recorded in §10 and decision D5. Nothing settled in §0 changed.
 
 Retail and corporate lending as one graph, built from four public regulatory
 filings that nobody joins up.
@@ -62,7 +67,9 @@ the movement in their reported commercial and industrial loans.
 **Out, and why**
 
 - **Deposits, transactions, customer behaviour** — no public source carries them
-  at loan-book grain, and inventing them would weaken the claim the graph makes
+  at loan-book grain, and inventing them would weaken the claim the graph makes.
+  *Since D5 they exist as a separate, labelled synthetic layer; the market layer's
+  claims still rest on public data alone.*
 - **Loan performance over time** — HMDA records the decision, not what happened next
 - **The whole commercial book** — SBA covers government-guaranteed lending only
 
@@ -210,7 +217,9 @@ redesign.
 preserves what it demonstrates.*
 
 **Status:** ◦ proposed · ◐ Cypher written · ● runs and visualises
-**All 25 are currently ◦.**
+**Status after the 2026-10-07 build:** 16 of 25 run and visualise (●); Q3 is blocked
+(purchaser is a category), Q10 and Q20 need tract adjacency, Q7, Q8, Q9, Q15, Q17
+and Q19 are not yet written. Per-question status: [`use-cases.md`](use-cases.md).
 
 ### Provenance and reconciliation
 
@@ -283,14 +292,15 @@ preserves what it demonstrates.*
 
 ## 9 · Capability matrix
 
-| Capability | Carried by | Runs on 1.1.0 |
-|---|---|---|
-| Traversal · pattern matching | Q1–9, 21–22 | yes |
-| Aggregation | Q11, 13, 23–24 | yes |
-| PageRank | Q14–17 | yes |
-| Vector search | Q18–20 | yes, with caveat |
-| Community detection | — | **no — WCC absent** |
-| Natural-language query | — | **no — `/api/nlq` 404** |
+| Capability | Carried by | Runs on 1.1.0 | Runs on 1.7.1 (built on) |
+|---|---|---|---|
+| Traversal · pattern matching | Q1–9, 21–22 | yes | yes |
+| Aggregation | Q11, 13, 23–24 | yes | yes |
+| PageRank | Q14–17 | yes | yes |
+| Vector search | Q18–20 | yes, with caveat | yes — index after load, then rebuild |
+| Community detection | — | **no — WCC absent** | yes — WCC |
+| Natural-language query | — | **no — `/api/nlq` 404** | yes, with a tenant `nlq_config` |
+| BFS / Dijkstra / triangle count | provenance paths | no | yes |
 
 > **Engine constraints — measured, not assumed.** `/api/nlq` returns **404**;
 > genuinely absent. `algo.pageRank` is the **only** algorithm that exists —
@@ -324,6 +334,18 @@ told where to look.
 
 ---
 
+> **Realised 7 Oct 2026 (D5).** The optional synthetic layer now exists as the
+> **bank layer**: one fictional bank (*Banking-KG Bank*) with 5,000 customers built
+> from a 26-table customer data request — households, accounts, transactions
+> rolled up into flows, loans, cards, credit-bureau tradelines and campaign
+> audiences. The disclosure above applies: the data is generated, the patterns are
+> planted, and the graph is shown to find them (40/40 heirs, 40/40 next-generation
+> customers). It is synthetic at the institution level too: the bank and every
+> competitor are fictional, every node carries `synthetic: true`, and no synthetic
+> counterparty is ever matched to a real lender.
+
+---
+
 ## 11 · Decisions
 
 ### Decided
@@ -339,7 +361,25 @@ itself and its market, not what a borrower experiences. Regulatory vocabulary is
 assumed rather than explained: HMDA, Call Report, LTV and charge-off need no
 gloss.
 
-### Open — now yours
+**D2 — Positioning: reconciliation first, then competitive intelligence.** *Decided 6 Oct 2026.*
+The demo opens on provenance ("where did this number come from", "who keeps what
+they write") and closes on one lender's whole book. The analysis that led here is
+kept below.
+
+**D4 — Scope: one state-year, DC 2023.** *Decided 6 Oct 2026.* The recommended v1;
+known size. Extending to VA, MD and NC is the next scope step — it is also what
+would let the bank layer's customers sit in real tracts.
+
+**D5 — Add a synthetic bank layer beside the public market.** *Decided 7 Oct 2026.*
+A bank audience (D1) asks "what does this do with *our* data?"; public filings
+cannot answer that. The bank layer answers it without any real customer data,
+and the bridge shows the bank inside its market. *Consequences:* two loan labels
+(`Loan` = HMDA origination, `CustomerLoan` = the bank's record) that must never be
+conflated; only two cross-layer joins (the bank as a `Lender`, its mortgages
+`CLASSIFIED_AS` a HMDA `LoanProduct`); `synthetic: true` on every bank node; the
+repo is private.
+
+### Background to D2 and D4 (kept for the record)
 
 **D2 — How much audit flavour is useful to a bank?**
 
