@@ -1,0 +1,6 @@
+server:
+  name: banking-kg
+  description: Read-only access to banking-kg — the public DC 2023 lending market and the synthetic Banking-KG Bank's customers and campaign audiences
+graph:
+  url: http://localhost:8081
+  tenant: bankingkg
