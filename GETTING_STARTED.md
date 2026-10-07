@@ -11,10 +11,11 @@ fresh clone to a loaded graph and your first question in about an hour.
 | Engine | a licensed Samyama engine **1.7.1**. Locally that is the Docker container on HTTP **:8081**. Check the port before writing to it: `lsof -nP -iTCP:8081 -sTCP:LISTEN`, then `curl -s localhost:8081/api/status` |
 | Ollama | only for vector search: `ollama pull all-minilm` |
 | Data | `../data/banking-kg/` in the workspace — never in the repo. `bank_v1/` must hold the bank's 26 request tables (see [docs/data.md](docs/data.md)) |
+| Settings | URL, tenant, data folder and the rest come from [`etl/config.py`](etl/config.py); override with environment variables (table in the README) |
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate && pip install -e '.[dev]'
-pytest                    # 16 offline tests on hand-built miniatures; no engine, no data needed
+pytest                    # 180 offline tests on hand-built miniatures; no engine, no data needed
 ```
 
 ## 1 · Read three things, not thirteen

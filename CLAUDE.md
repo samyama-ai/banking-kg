@@ -18,16 +18,17 @@ The repo is private (`LICENSE`). **Never write a client's or prospect's name int
 always "Banking-KG Bank", and the bank layer's source is "the customer data request". This rule also covers
 the paths, modules and folder names the bank data came from.
 
-The project uses Python ≥ 3.12 and only the standard library; pytest, ruff and fastmcp are optional extras.
+The project uses Python ≥ 3.12 and only the standard library; pytest, pytest-cov, ruff and fastmcp are optional extras.
 
 ## Commands
 
 ```bash
 python3.12 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 .venv/bin/python -m pytest                                    # offline, hand-built fixtures; no engine or data
-.venv/bin/python -m pytest tests/test_banking_kg.py::test_bridge_places_the_bank_in_the_market
-.venv/bin/ruff check .
-BANKING_KG_URL=1 .venv/bin/python -m pytest                   # + live check against ../data/banking-kg/audiences
+.venv/bin/python -m pytest tests/test_bridge.py::test_loan_product          # one test (one module per source module)
+.venv/bin/python -m pytest --cov=etl --cov=benchmarks --cov=mcp_server     # coverage (kept at ~99%)
+.venv/bin/ruff check . && .venv/bin/ruff format --check .  # strict rules incl. bandit (S) and docstrings (D1)
+BANKING_KG_LIVE=1 .venv/bin/python -m pytest                # + live check against ../data/banking-kg/audiences
 
 python -m etl.fetch  --data ../data/banking-kg --state DC --year 2023            # market sources, ~5 min
 python -m etl.loader --url http://localhost:8081 --graph <tenant> [--layers market|bank|market,bank] [--export PATH]
@@ -35,6 +36,13 @@ python -m etl.embed  --url http://localhost:8081 --graph <tenant>               
 python -m etl.verify --data-dir ../data/banking-kg/bank_v1 --audiences ../data/banking-kg/audiences
 python -m benchmarks.run --url http://localhost:8081 --graph <tenant>            # rewrites benchmarks/results.md
 ```
+
+**Configuration.** Every URL, port, timeout, batch size, quota and source endpoint is in `etl/config.py`;
+CLI flags default to it and environment variables (`BANKING_KG_URL`, `BANKING_KG_GRAPH`, `BANKING_KG_DATA`,
+`OLLAMA_URL`, …; table in README) override it. Don't add literals elsewhere — add a named constant. All HTTP
+goes through `helpers.open_url`, which refuses non-http(s) schemes; Cypher identifiers go through
+`helpers.ident`, values through `helpers.lit`. Every CLI `main()` returns 0 / 1 (refused or mismatch) /
+2 (unreachable) and prints a one-line reason to stderr.
 
 To check a change without an engine, build the graph in memory:
 `from etl.loader import build; g, as_of = build(Path('../data/banking-kg'), Path('../data/banking-kg/bank_v1'), {'market','bank'})`,

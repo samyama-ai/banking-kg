@@ -20,7 +20,15 @@ MATCH (n) RETURN coalesce(n.synthetic, false) AS synthetic, count(n)
 
 ## The picture
 
-```
+In words: on the market side, an `Application` is filed with a `Lender`; if originated it becomes a `Loan`,
+which may be `SOLD_TO` a `Purchaser`. Applications sit in a `Tract`, which sits in a `County` and an `MSA`.
+Lenders register as a `LegalEntity` and file quarterly `Filing`s; SBA loans link a `Business` to the lender
+that made them. On the bank side, a `Customer` belongs to a `Household`, owns `Account`s of a `Product`,
+borrows `CustomerLoan`s secured by `Collateral`, and sends money to or is paid by a `Counterparty`. The two
+sides meet in two places: every bank `Product` is `OFFERED_BY` the bank's `Lender` node, and the bank's
+mortgages are `CLASSIFIED_AS` the same `LoanProduct` that market applications are filed under.
+
+```text
  MARKET (public)                                                        BANK (synthetic)
 
  (Purchaser)<-SOLD_TO-(Loan)-ORIGINATED_BY->(Lender)<-OFFERED_BY-(Product)<-OF_PRODUCT-(Account)<-OWNS-(Customer)-MEMBER_OF->(Household)*
@@ -36,7 +44,7 @@ MATCH (n) RETURN coalesce(n.synthetic, false) AS synthetic, count(n)
  (Lender)<-MADE_BY-(SBALoan)<-BORROWED-(Business)-IN_INDUSTRY->(Industry)
  (DevelopmentCompany)<-MADE_BY-'   '-UNDER_FRANCHISE->(Franchise)   (Business)-LOCATED_AT->(Address)
 
- * derived: built from the source, not a source row (derived: true, with a `basis`)
+ * marks a derived part: built from the source, not a source row (derived: true, with a `basis`)
 ```
 
 ## Market layer — 17 node types (real)
@@ -61,7 +69,11 @@ ORIGINATED_BY SOLD_TO LOCATED_AT IN_INDUSTRY BORROWED UNDER_FRANCHISE MADE_BY FI
 
 ### The join this layer exists for
 
-```
+In words: a HMDA application carries the lender's LEI; GLEIF turns the LEI into a legal name; the legal name
+is matched to an FDIC certificate; the certificate links the lender to its Call Report filings and to the SBA
+loans it made.
+
+```text
 HMDA Application ──lei──▶ Lender ──LEI──▶ GLEIF legal name ──name match──▶ FDIC cert ◀──BankFDICNumber── SBA loan
                                                                               │
                                                                               └──▶ Call Report Filing (quarterly)
@@ -76,19 +88,19 @@ ambiguous gets **no** certificate — a wrong one is worse than none.
 | Node | One per | From the request table | Notes |
 |---|---|---|---|
 | **Customer** | customer | `customers` | + roll-ups: last address change, deceased date, logins in 90 days, latest credit score, receptiveness. **No email, phone or street address** |
-| **Household** ★ | address | derived | individuals sharing `address_line1` + `postal_code`. A joint account between people at different addresses is **not** a household |
+| **Household** (derived) | address | derived | individuals sharing `address_line1` + `postal_code`. A joint account between people at different addresses is **not** a household |
 | **Account** | account | `accounts` | + latest ledger balance |
 | **Product** | product | `products` | 32 products: checking, savings, CDs, mortgages, HELOC, auto, cards, lines |
 | **CustomerLoan** | loan | `loans` | the bank's own loan record — **not** a HMDA `Loan` |
 | **Collateral** | collateral | `loan_collateral` | lien position on `SECURED_BY` |
 | **CreditLine**, **Card** | | `credit_lines`, `debit_cards`, `credit_cards` | |
-| **Counterparty** ★ | name | derived | COMPETITOR and EMPLOYER parsed from transaction descriptions; LENDER from credit-bureau tradelines. **All fictional** |
+| **Counterparty** (derived) | name | derived | COMPETITOR and EMPLOYER parsed from transaction descriptions; LENDER from credit-bureau tradelines. **All fictional** |
 | **MerchantCategory** | MCC | `transactions.mcc_code` | ISO 18245 descriptions |
 | **BusinessUnit** | branch | `business_unit` | **isolated**: the request names a join column it does not request |
 | **Audience** | use case × as-of date | `etl/audiences.py` | campaign lists, see [use-cases.md](use-cases.md) |
 
 15 relationship types: `MEMBER_OF OWNS OF_PRODUCT SENDS_TO RECEIVES_FROM PAID_BY SPENDS_AT HAS_LOAN BORROWS
-SECURED_BY HAS_CREDIT_LINE HAS_CARD HOLDS_CARD OWES IN_AUDIENCE`. ★ = derived.
+SECURED_BY HAS_CREDIT_LINE HAS_CARD HOLDS_CARD OWES IN_AUDIENCE`. Derived means built from the source, not a source row.
 
 ## Bridge — 1 node, 2 relationship types
 

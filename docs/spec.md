@@ -97,7 +97,9 @@ rather than the loans themselves.
 
 ## 4 · The join
 
-```
+In words: HMDA loan → (by LEI) GLEIF → (by legal entity) FDIC certificate; the certificate also receives the SBA loan (by BankFDICNumber) and leads to the quarterly Call Report filings.
+
+```text
 HMDA loan ──lei──▶ GLEIF ──legal entity──▶ FDIC cert ◀──BankFDICNumber── SBA loan
                                                │
                                                └──▶ Call Report filings (quarterly)
@@ -216,72 +218,72 @@ redesign.
 *Proposed — expected to change. Each carries why it is hard, so a replacement
 preserves what it demonstrates.*
 
-**Status:** ◦ proposed · ◐ Cypher written · ● runs and visualises
-**Status after the 2026-10-07 build:** 16 of 25 run and visualise (●); Q3 is blocked
+**Status column:** proposed · written (Cypher exists) · runs (runs and visualises)
+**Status after the 2026-10-07 build:** 16 of 25 run and visualise; Q3 is blocked
 (purchaser is a category), Q10 and Q20 need tract adjacency, Q7, Q8, Q9, Q15, Q17
 and Q19 are not yet written. Per-question status: [`use-cases.md`](use-cases.md).
 
 ### Provenance and reconciliation
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 1 | Where did this number come from? | Five hops nobody wrote down | traversal | ◦ |
-| 2 | We reported $400M originated and $50M growth — where did the rest go? | Two filings, two regulators, no shared key | traversal | ◦ |
-| 3 | Who bought our loans, and are they lenders here too? | The buyer re-enters the graph as an originator | path | ◦ |
-| 4 | Which loans have no traceable purchaser at all? | Absence, not presence | traversal | ◦ |
+| 1 | Where did this number come from? | Five hops nobody wrote down | traversal | proposed |
+| 2 | We reported $400M originated and $50M growth — where did the rest go? | Two filings, two regulators, no shared key | traversal | proposed |
+| 3 | Who bought our loans, and are they lenders here too? | The buyer re-enters the graph as an originator | path | proposed |
+| 4 | Which loans have no traceable purchaser at all? | Absence, not presence | traversal | proposed |
 
 ### Concentration and blast radius
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 5 | If this tract turns, which lenders are exposed and by how much? | Fan-out with dollar weighting | traversal | ◦ |
-| 6 | Which single industry touches the most lenders? | NAICS → loans → lender, aggregated | traversal | ◦ |
-| 7 | Which lenders share the most borrowers with this one? | Two lenders meeting at a borrower set | pattern | ◦ |
-| 8 | Which counties have retail lending but no corporate lending? | An edge type that is absent | traversal | ◦ |
-| 9 | If this source system failed, which figures lose provenance? | Depth-unbounded cascade | traversal | ◦ |
+| 5 | If this tract turns, which lenders are exposed and by how much? | Fan-out with dollar weighting | traversal | proposed |
+| 6 | Which single industry touches the most lenders? | NAICS → loans → lender, aggregated | traversal | proposed |
+| 7 | Which lenders share the most borrowers with this one? | Two lenders meeting at a borrower set | pattern | proposed |
+| 8 | Which counties have retail lending but no corporate lending? | An edge type that is absent | traversal | proposed |
+| 9 | If this source system failed, which figures lose provenance? | Depth-unbounded cascade | traversal | proposed |
 
 ### Fair lending and disparity
 
 *Framed for a bank audience as what an examiner would see before they arrive.*
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 10 | Which lenders deny at different rates in *adjacent* tracts? | **Needs a derived adjacency edge** | traversal | ◦ |
-| 11 | Same income and LTV — who charges the widest spread? | Parallel paths, same endpoints | aggregation | ◦ |
-| 12 | Which tracts are served by only one lender? | Degree-1 detection | traversal | ◦ |
-| 13 | Do denial reasons cluster by geography or by applicant? | Two clusterings compared | aggregation | ◦ |
+| 10 | Which lenders deny at different rates in *adjacent* tracts? | **Needs a derived adjacency edge** | traversal | proposed |
+| 11 | Same income and LTV — who charges the widest spread? | Parallel paths, same endpoints | aggregation | proposed |
+| 12 | Which tracts are served by only one lender? | Degree-1 detection | traversal | proposed |
+| 13 | Do denial reasons cluster by geography or by applicant? | Two clusterings compared | aggregation | proposed |
 
 ### Graph algorithms
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 14 | Which lenders are most central in this market? | Centrality over a shared-tract network | PageRank | ◦ |
-| 15 | Which are central *despite* small balance sheets? | Rank against assets — the mismatch is the finding | PageRank | ◦ |
-| 16 | Which purchasers sit behind the most originators? | Secondary-market hubs | PageRank | ◦ |
-| 17 | Which lender is central in corporate but invisible in retail? | Cross-book centrality | PageRank | ◦ |
+| 14 | Which lenders are most central in this market? | Centrality over a shared-tract network | PageRank | proposed |
+| 15 | Which are central *despite* small balance sheets? | Rank against assets — the mismatch is the finding | PageRank | proposed |
+| 16 | Which purchasers sit behind the most originators? | Secondary-market hubs | PageRank | proposed |
+| 17 | Which lender is central in corporate but invisible in retail? | Cross-book centrality | PageRank | proposed |
 
 ### Vector search
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 18 | Find lenders whose book resembles this one | Similarity over a composition vector | vector | ◦ |
-| 19 | Which looks like us but carries a higher loss allowance? | Near neighbours, divergent outcome | vector | ◦ |
-| 20 | Tracts with a similar profile but different outcomes | **Needs adjacency** | vector | ◦ |
+| 18 | Find lenders whose book resembles this one | Similarity over a composition vector | vector | proposed |
+| 19 | Which looks like us but carries a higher loss allowance? | Near neighbours, divergent outcome | vector | proposed |
+| 20 | Tracts with a similar profile but different outcomes | **Needs adjacency** | vector | proposed |
 
 ### Corporate and pattern detection
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 21 | Which addresses carry several businesses drawing separate guaranteed loans? | Invisible row by row | pattern | ◦ |
-| 22 | Which borrowers took loans from several lenders in one year? | Loan stacking; borrower is not a key | pattern | ◦ |
-| 23 | Which franchise brands concentrate in a single lender? | Brand → lender concentration | aggregation | ◦ |
-| 24 | Which lenders charge off out of line with peers in the same industry? | Peer group defined by the graph | aggregation | ◦ |
+| 21 | Which addresses carry several businesses drawing separate guaranteed loans? | Invisible row by row | pattern | proposed |
+| 22 | Which borrowers took loans from several lenders in one year? | Loan stacking; borrower is not a key | pattern | proposed |
+| 23 | Which franchise brands concentrate in a single lender? | Brand → lender concentration | aggregation | proposed |
+| 24 | Which lenders charge off out of line with peers in the same industry? | Peer group defined by the graph | aggregation | proposed |
 
 ### Closer
 
-| # | Question | Why it is hard | Shows | St |
+| # | Question | Why it is hard | Shows | Status |
 |---|---|---|---|---|
-| 25 | Show me this lender's entire book | Every node type and edge type in one frame | all | ◦ |
+| 25 | Show me this lender's entire book | Every node type and edge type in one frame | all | proposed |
 
 > **Two dependencies.** Questions 10 and 20 need a **tract-adjacency edge** no
 > source provides — derivable from census shapefiles, but real work. Questions
@@ -324,7 +326,7 @@ public source carries. If added, the disclosure is the one
 planted, and what is demonstrated is that the structure finds them without being
 told where to look.
 
-> **Carried from Qorro's research.** Generated data is not automatically
+> **Carried from earlier research on synthetic banking data.** Generated data is not automatically
 > anonymous. Regulators test singling-out, linkability and inference; fidelity
 > and re-identification risk rise together. Equally, a dataset can be identifiably
 > *one bank* from its regional concentration and product mix even with every

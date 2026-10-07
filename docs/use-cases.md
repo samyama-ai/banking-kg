@@ -7,26 +7,29 @@ and their timings in [`../benchmarks/results.md`](../benchmarks/results.md).
 ## 1 · The market (real public data)
 
 The full catalogue — 25 questions, each with why it is hard — is [spec §8](spec.md#8--question-catalogue).
-Status after the 2026-10-07 build (● runs and visualises · ◦ not yet):
+Status after the 2026-10-07 build. "Runs" means the Cypher runs and visualises on the loaded graph:
 
-| Spec # | Question | Demo | St |
+| Spec # | Question | Demo | Status |
 |---|---|---|---|
-| 1 | Where did this number come from? | Q1 | ● |
-| 2 | Reported originations vs Call Report growth — where did the rest go? | Q2 | ● |
-| 3 | Who bought our loans, and are they lenders here too? | — | ◦ blocked: HMDA purchaser is a category |
-| 4 | Which loans were never sold? | Q3 | ● |
-| 5 | If this tract turns, which lenders are exposed? | Q4 | ● |
-| 6 | Which single industry touches the most lenders? | [v1 market demo](../../samyama-graph-demo-ops/demo/scripts/bankingkg/queries.cypher) | ● |
-| 12 | Which tracts are served by only one or two lenders? | [v1 market demo](../../samyama-graph-demo-ops/demo/scripts/bankingkg/queries.cypher) | ● |
-| 11 | Who charges the widest spread? | [v1 market demo](../../samyama-graph-demo-ops/demo/scripts/bankingkg/queries.cypher) | ● |
-| 13 | Denial reasons in the lowest-income tracts | Q5 | ● |
-| 14, 16 | Most central lenders; purchasers behind the most originators (PageRank) | algorithms 1 | ● |
-| 18 | Lenders whose book resembles this one | vectors 1–2 | ● |
-| 21 | Addresses with several businesses each drawing a guaranteed loan | Q7 | ● |
-| 22, 23, 24 | Loan stacking, franchise concentration, charge-offs | [v1 market demo](../../samyama-graph-demo-ops/demo/scripts/bankingkg/queries.cypher) | ● |
-| 25 | This lender's entire book | Q18 | ● |
-| 10, 20 | Adjacent tracts | — | ◦ needs a tract-adjacency edge |
-| 7, 8, 9, 15, 17, 19 | Shared borrowers, retail-only counties, source-system cascade, central-but-small, cross-book centrality, like-us-but-higher-allowance | — | ◦ not yet written |
+| 1 | Where did this number come from? | Q1 | Runs |
+| 2 | Reported originations vs Call Report growth — where did the rest go? | Q2 | Runs |
+| 3 | Who bought our loans, and are they lenders here too? | — | Blocked: HMDA purchaser is a category |
+| 4 | Which loans were never sold? | Q3 | Runs |
+| 5 | If this tract turns, which lenders are exposed? | Q4 | Runs |
+| 6 | Which single industry touches the most lenders? | v1 market demo | Runs |
+| 12 | Which tracts are served by only one or two lenders? | v1 market demo | Runs |
+| 11 | Who charges the widest spread? | v1 market demo | Runs |
+| 13 | Denial reasons in the lowest-income tracts | Q5 | Runs |
+| 14, 16 | Most central lenders; purchasers behind the most originators (PageRank) | algorithms 1 | Runs |
+| 18 | Lenders whose book resembles this one | vectors 1–2 | Runs |
+| 21 | Addresses with several businesses each drawing a guaranteed loan | Q7 | Runs |
+| 22, 23, 24 | Loan stacking, franchise concentration, charge-offs | v1 market demo | Runs |
+| 25 | This lender's entire book | Q18 | Runs |
+| 10, 20 | Adjacent tracts | — | Not yet: needs a tract-adjacency edge |
+| 7, 8, 9, 15, 17, 19 | Shared borrowers, retail-only counties, source-system cascade, central-but-small, cross-book centrality, like-us-but-higher-allowance | — | Not yet written |
+
+"v1 market demo" is the first recorded question set, in the separate demo-ops repository at
+`samyama-graph-demo-ops/demo/scripts/bankingkg/queries.cypher`; those questions run unchanged on this graph.
 
 The reconciliation question as a table — retained originations beside the change in reported residential
 real-estate loans:
@@ -138,10 +141,18 @@ RETURN c.id, c.household_id, k.name, sum(s.total)
 ```
 
 ### Next use cases (8-15)
-Not built yet. With the request: 8 wallet gap ✅ possible; 9 business owners ✅ (AUTHORISED_SIGNER); 10 bring your
-loan home ✅ via `OWES` (tradelines); 11 relationship-manager change ❌ no RM table in the request; 12 service
-clusters ⚠ disputes and crm_data only; 13 branch closure ❌ business_unit cannot be joined;
-14 HELOC clean-up ⚠ no co-borrowers; 15 life events ❌ licensed data, not in the request.
+Not built yet. With the request: 
+
+| # | Use case | Possible with the request? |
+|---|---|---|
+| 8 | Wallet gap | Yes |
+| 9 | Business owners | Yes, through AUTHORISED_SIGNER |
+| 10 | Bring your loan home | Yes, through `OWES` (tradelines) |
+| 11 | Relationship-manager change | No: no relationship-manager table in the request |
+| 12 | Service clusters | Partly: disputes and crm_data only |
+| 13 | Branch closure | No: business_unit cannot be joined |
+| 14 | HELOC clean-up | Partly: no co-borrowers |
+| 15 | Life events | No: licensed data, not in the request |
 
 ## 3 · Across the line
 

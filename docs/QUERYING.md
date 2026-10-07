@@ -38,8 +38,9 @@ pip install -e '.[mcp]'
 BANKING_KG_URL=http://localhost:8081 BANKING_KG_GRAPH=bankingkg python -m mcp_server.server
 ```
 
-Tools: `lender_book(name)`, `list_audiences()`, `audience_members(use_case, slice, limit)`,
-`customer_connections(customer_id)`. None writes; none returns contact details.
+Tools: `lender_book(name)`, `list_audiences()`, `audience_members(use_case, group, limit)` (group is
+`CAMPAIGN` or `CONTROL`), `customer_connections(customer_id, limit)`. None writes; none returns contact
+details; every argument is quoted and every list is capped at 500 rows.
 
 ## Rules that bite when writing Cypher here
 

@@ -43,7 +43,8 @@ taxonomy as every DC origination, our profile in the same vector space as every 
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate && pip install -e '.[dev]'
-pytest                                                                  # 16 offline tests, no engine needed
+pytest                                                                  # 180 offline tests, no engine or data needed
+ruff check . && ruff format --check .                                   # lint (incl. bandit security rules) and style
 
 # engine: the local licensed 1.7.1 container (HTTP on :8081) — check the port first
 lsof -nP -iTCP:8081 -sTCP:LISTEN
@@ -63,15 +64,34 @@ curl -X POST localhost:8081/api/tenants/bankingkg/snapshot/import -F "file=@../d
 python -m etl.embed --url http://localhost:8081 --graph bankingkg       # embed config is not in the snapshot
 ```
 
+## Configuration
+
+Every setting lives in [`etl/config.py`](etl/config.py); nothing else hard-codes a URL, port, timeout, batch
+size or quota. Command-line flags default to it, and these environment variables override it:
+
+| Variable | Default | What it sets |
+|---|---|---|
+| `BANKING_KG_URL` | `http://localhost:8081` | engine HTTP API (http or https only) |
+| `BANKING_KG_GRAPH` | `bankingkg` | tenant id |
+| `BANKING_KG_DATA` | `../data/banking-kg` | data folder (outside the repo) |
+| `BANKING_KG_STATE`, `BANKING_KG_YEAR` | `DC`, `2023` | market scope |
+| `OLLAMA_URL` | `http://localhost:11434` | Ollama as seen from this machine |
+| `BANKING_KG_ENGINE_OLLAMA` | `http://host.docker.internal:11434` | Ollama as seen from the engine |
+| `BANKING_KG_EMBED_MODEL` | `all-minilm` | embedding model |
+| `BANKING_KG_LIVE` | unset | `1` runs the live test against a loaded engine |
+
+Every command exits non-zero on failure (1: refused or a mismatch; 2: engine, Ollama or inputs unreachable)
+with a one-line reason on stderr.
+
 ## Layout
 
 | Folder | What |
 |---|---|
 | `schema/` | `banking_kg.cypher`: every node type and relationship, documented, plus one uniqueness constraint per label |
-| `etl/` | `fetch.py` (public sources) · `market.py` (market layer) · `identity.py` (LEI → FDIC cert) · `bank.py` (bank layer) · `bridge.py` · `loader.py` (load + check + audiences + snapshot) · `audiences.py` · `verify.py` (independent recalculation) · `embed.py` · `helpers.py` · `reference.py` |
-| `tests/` | offline tests on two hand-built miniatures where every answer is known; one live test |
+| `etl/` | `config.py` (every setting) · `fetch.py` (public sources) · `market.py` (market layer) · `identity.py` (LEI → FDIC cert) · `bank.py` (bank layer) · `bridge.py` · `loader.py` (load + check + audiences + snapshot) · `audiences.py` · `verify.py` (independent recalculation) · `embed.py` · `helpers.py` (graph, engine client, Cypher quoting) · `reference.py` |
+| `tests/` | one test module per source module, on two hand-built miniatures where every answer is known, a fake engine and a local HTTP server; 99% line coverage; one live test |
 | `benchmarks/` | query timings for every demo question and audience |
-| `mcp_server/` | read-only MCP tools: a lender's whole book, audiences, a customer's connections |
+| `mcp_server/` | read-only MCP tools (`tools.py`, testable without an MCP runtime; `server.py` registers them): a lender's whole book, audiences, a customer's connections |
 | `demo/` | the 45-minute walkthrough: segments, question set, vector and NLQ prompts |
 | `docs/` | schema, standards, use cases, data, querying, spec, issues |
 | `data/` | `SNAPSHOT.md` only — the data itself lives in `../data/banking-kg/`, never in the repo |

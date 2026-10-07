@@ -47,6 +47,18 @@ for a graph.
 - "HMDA shows decisions, not repayment. The Call Report is an aggregate. That difference in grain is what
   makes the reconciliation work."
 
+## Accessibility of the video
+
+- **Captions:** every take ships with an `.srt` track (soft subtitles) and a burned-in copy, generated from
+  the narration cues; check the captions against the spoken words before publishing.
+- **Say what is on screen.** Narration names each node type and the answer, not "this one here", so the
+  video works without seeing the graph. Every question's answer is also written in `queries.cypher`,
+  `vectors.md`, `nlq.md` and `algorithms.md`, which double as a text transcript of the demo.
+- **Do not rely on colour.** Insight colours nodes by label; say the label aloud, and keep node captions on.
+- **Legible size.** Record at 1920×1080 with the browser at 125% zoom or more, so labels stay readable when
+  the video is scaled down.
+- **Pace.** Hold each graph for at least 5 seconds after it settles (the recorder's `HOLD` setting).
+
 ## How to rebuild
 
 ```bash

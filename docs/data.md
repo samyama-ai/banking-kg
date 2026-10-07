@@ -1,9 +1,11 @@
 # Data
 
 **Data never enters this repo.** Everything lives in the workspace's unversioned data folder,
-`../data/banking-kg/` (`.gitignore` also blocks `*.csv` and `*.sgsnap`).
+`../data/banking-kg/` (`.gitignore` also blocks `*.csv` and `*.sgsnap`). The folder holds the market source
+files written by `etl.fetch`, the bank's request tables under `bank_v1/`, and the audiences and snapshot the
+loader writes:
 
-```
+```text
 ../data/banking-kg/
   hmda_dc_2023.csv  filers_dc_2023.json  gleif_dc_2023.json      market layer, written by etl.fetch
   fdic_active_institutions.json  fdic_financials_2022q4_2023q4.json

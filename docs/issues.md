@@ -17,7 +17,7 @@ House convention: **one issue → one branch → one PR**, branch named
 | 5 | Schema and loader | **done** — `schema/banking_kg.cypher`, `etl/loader.py`; counts read back from the engine |
 | 6 | Vector index | **done** — `etl/embed.py` creates the indexes, writes vectors, then rebuilds (the rebuild is what makes earlier writes visible) |
 | 7 | Tract adjacency | open — blocks spec Q10, Q20 |
-| 8–11 | The 25 questions | **16 of 25 ●**; Q3 blocked; Q7, Q8, Q9, Q15, Q17, Q19 to write (`docs/use-cases.md`) |
+| 8–11 | The 25 questions | **16 of 25 run**; Q3 blocked; Q7, Q8, Q9, Q15, Q17, Q19 to write (`docs/use-cases.md`) |
 | 12 | 45-minute demo | **ready to record** — `demo/README.md` (running order), question files in `demo/` |
 | 13 | Snapshot release | **done** — `data/SNAPSHOT.md` |
 | 14 | National scale test | open, gated on D4 |
@@ -108,7 +108,7 @@ PR cap
 
 All 25 are currently **proposed**. Each needs Cypher that runs, returns what the
 question claims, and visualises legibly. Record the status per question in §8
-(◦ proposed → ◐ written → ● runs and visualises).
+(proposed → written → runs and visualises).
 
 Suggested split, so each PR demonstrates one capability:
 

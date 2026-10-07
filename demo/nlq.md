@@ -20,7 +20,7 @@ queries on tenant bankingkg2 (75,179 nodes), 2026-10-07. Questions 1–4 are the
 
 ## Tenant NLQ config (needed by this segment)
 
-```
+```text
 PORT=8791 python3 video_tools/claude_chat_proxy.py      # keep running during the recording
 PATCH /api/tenants/bankingkg  nlq_config = {enabled: true, provider: "OpenAI", model: "claude", api_key: "local",
                               api_base_url: "http://host.docker.internal:8791/v1", system_prompt: <below>}
