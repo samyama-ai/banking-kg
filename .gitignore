@@ -20,3 +20,5 @@ dist/
 *.mp4
 *.webm
 *.cast
+.coverage
+htmlcov/

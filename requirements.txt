@@ -3,5 +3,5 @@
 # engine over HTTP through etl/helpers.py, so there is no SDK dependency.
 #
 # Optional:
-#   pip install -e '.[dev]'    pytest, ruff
+#   pip install -e '.[dev]'    pytest, pytest-cov, ruff
 #   pip install -e '.[mcp]'    fastmcp, for mcp_server/
