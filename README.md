@@ -9,6 +9,24 @@ types**, on the [Samyama](https://git.samyama.ai/Samyama.ai) graph-vector engine
 > The **market layer is real public data**. The **bank layer is synthetic**: *Banking-KG Bank* and its
 > competitors are fictional, and every bank-layer node carries `synthetic: true`.
 
+![banking-kg demo: reconciliation, concentration, fair lending, credit risk, retention, and the bank beside its market](demo/banking-kg.gif)
+
+## Demo
+
+A narrated terminal walkthrough of the questions a bank's risk, finance, compliance and marketing teams ask —
+what is real, who keeps what they write (HMDA vs. Call Report), who dominates the core mortgage product, what
+an examiner sees first in low-income tracts, where SBA loans fail, which customers are moving money to
+competitors, and how the bank's own mortgages sit beside the market's:
+
+```bash
+pip install -e '.[demo]'                                         # rich, for the terminal output
+BANKING_KG_GRAPH=bankingkg python -m demo.demo                   # run live against a loaded engine
+asciinema rec --headless --window-size 110x34 -i 5 -c "python -m demo.demo" demo/banking-kg.cast   # re-record
+agg --font-size 15 demo/banking-kg.cast demo/banking-kg.gif     # re-render the GIF
+```
+
+The 45-minute Samyama Insight walkthrough and its question set are in [`demo/README.md`](demo/README.md).
+
 | Layer | Source | In the graph |
 |---|---|---|
 | **Market** · retail mortgage | HMDA LAR (CFPB data-browser API) | 17,474 `Application`, 8,616 `Loan` (only `action_taken = 1`), 201 `Tract`, buyers, denial reasons |

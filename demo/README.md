@@ -11,6 +11,7 @@ demo kit in `samyama-graph-demo-ops/demo/scripts`; copy the four question files 
 | [`vectors.md`](vectors.md) | `demo_vector_search.py` | 9 searches, with the expected nearest neighbours |
 | [`nlq.md`](nlq.md) | `demo_nlq.py` | 10 natural-language questions + the tenant NLQ system prompt |
 | [`algorithms.md`](algorithms.md) | `demo_algorithms.py` | 5 algorithm steps with measured results |
+| [`demo.py`](demo.py) | `python -m demo.demo` | the narrated terminal demo: 7 high-level BFSI questions, recorded as [`banking-kg.cast`](banking-kg.cast) and rendered to [`banking-kg.gif`](banking-kg.gif) |
 
 Every expected answer below was measured on engine 1.7.1 (tenant `bankingkg2`, 75,179 nodes) on 2026-10-07.
 

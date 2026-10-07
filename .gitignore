@@ -20,5 +20,6 @@ dist/
 *.mp4
 *.webm
 *.cast
+!demo/banking-kg.cast
 .coverage
 htmlcov/
